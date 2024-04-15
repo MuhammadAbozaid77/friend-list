@@ -3,6 +3,7 @@ import { useState } from "react";
 import { initialFriends } from "./assets/friendsData";
 
 function Button({ children, onClick, typeSubmit }) {
+  console.log("hhhhhh");
   return (
     <>
       <button className="button" onClick={onClick} type={typeSubmit}>

@@ -35,6 +35,10 @@ export default function App() {
     }
   };
 
+  const handelSplitBill = (args) => {
+    console.log(args);
+  };
+
   return (
     <>
       <div className="app">
@@ -51,7 +55,12 @@ export default function App() {
             {showAddFriend ? "Close" : "Add Friend"}
           </Button>
         </div>
-        {selectedFriend && <FormSplitBill selectedFriend={selectedFriend} />}
+        {selectedFriend && (
+          <FormSplitBill
+            selectedFriend={selectedFriend}  
+            handelSplitBill={handelSplitBill}
+          />
+        )}
       </div>
     </>
   );
@@ -142,28 +151,61 @@ function FormAddFriend({ handelUpdatedList }) {
   );
 }
 
-function FormSplitBill({ selectedFriend }) {
+function FormSplitBill({ selectedFriend , handelSplitBill}) {
+  const [billValue, setBillValue] = useState("");
+  const [yourBillValue, setYourBillValue] = useState("");
+  const [whoIsPaying, setWhoIsPaying] = useState("user");
+  // console.log(billValue, yourBillValue);
+  const friendBill = billValue ? billValue - yourBillValue : "";
+
+  const handelSubmit = (e) => {
+    e.preventDefault();
+    if (!billValue || !yourBillValue) return;
+    handelSplitBill()
+    // const newSplitBill = {
+    //   billValue,
+    //   yourBillValue,
+    //   whoIsPaying,
+    // };
+    // console.log(newSplitBill);
+  };
+
   return (
     <>
-      <form className="form-split-bill">
+      <form className="form-split-bill" onSubmit={handelSubmit}>
         <h2>
           Split a Bill with
           <span className=" text-[#ffa94d] mx-2">{selectedFriend.name}</span>
         </h2>
 
         <label htmlFor=""> 💰 Bill Value </label>
-        <input type="text" />
+        <input
+          type="text"
+          value={billValue}
+          onChange={(e) => setBillValue(e.target.value)}
+        />
 
         <label htmlFor=""> 🧍‍♂️ Your Expense </label>
-        <input type="text" />
+        <input
+          type="text"
+          value={yourBillValue}
+          onChange={(e) =>
+            setYourBillValue(
+              +e.target.value > +billValue ? billValue : e.target.value
+            )
+          }
+        />
 
-        <label htmlFor=""> 👭 {selectedFriend.name} Expense </label>
-        <input type="text" disabled />
+        <label htmlFor=""> 👭 {selectedFriend.name}s Expense </label>
+        <input type="text" disabled value={friendBill} />
 
         <label htmlFor=""> 🤑 Who Is Paying The Bill ? </label>
-        <select>
+        <select
+          value={whoIsPaying}
+          onChange={(e) => setWhoIsPaying(e.target.value)}
+        >
           <option value="user"> You </option>
-          <option value="xx"> {selectedFriend.name} </option>
+          <option value={selectedFriend.name}> {selectedFriend.name} </option>
         </select>
 
         <Button>Spilt Bill</Button>
